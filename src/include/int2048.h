@@ -24,9 +24,15 @@ class int2048 {
   static constexpr int WIDTH = 4;    // digits per limb
   std::vector<int> a;                // little-endian limbs
   bool neg;                          // sign flag, false for >=0
+  // Pending print result for Integer1 in-place methods
+  std::vector<int> pend;
+  bool pend_valid{false};
+  bool pend_neg{false};
 
   // Helpers (private)
   void trim();
+  void snapshot();
+  void set_pending(const int2048 &v);
   static int abs_compare(const int2048 &x, const int2048 &y);
   static int2048 add_abs(const int2048 &x, const int2048 &y);
   static int2048 sub_abs(const int2048 &x, const int2048 &y); // |x| >= |y|

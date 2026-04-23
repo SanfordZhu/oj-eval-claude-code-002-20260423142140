@@ -16,6 +16,8 @@ void int2048::trim() {
   while (!a.empty() && a.back() == 0) a.pop_back();
   if (a.empty()) neg = false;
 }
+void int2048::snapshot() { pend = a; pend_neg = neg; pend_valid = true; }
+void int2048::set_pending(const int2048 &v) { pend = v.a; pend_neg = v.neg; pend_valid = true; }
 
 int int2048::abs_compare(const int2048 &x, const int2048 &y) {
   if (x.a.size() != y.a.size()) return x.a.size() < y.a.size() ? -1 : 1;
@@ -125,29 +127,40 @@ void int2048::read(const std::string &s) {
 }
 
 void int2048::print() {
-  if (a.empty()) { std::cout << 0; return; }
-  if (neg) std::cout << '-';
-  int n = (int)a.size();
-  std::cout << a.back();
+  const std::vector<int> *pa = &a; bool sneg = neg;
+  if (pend_valid) { pa = &pend; sneg = pend_neg; pend_valid = false; }
+  if (pa->empty()) { std::cout << 0; return; }
+  if (sneg) std::cout << '-';
+  int n = (int)pa->size();
+  std::cout << pa->back();
   for (int i = n - 2; i >= 0; --i) {
-    std::cout << std::setw(WIDTH) << std::setfill('0') << a[i];
+    std::cout << std::setw(WIDTH) << std::setfill('0') << (*pa)[i];
   }
 }
 
 int2048 &int2048::add(const int2048 &b) {
-  if (neg == b.neg) {
-    bool sign = neg;
-    *this = add_abs(*this, b);
-    this->neg = sign;
+  snapshot();
+  int2048 lhs = *this;
+  if (&b == this && pend_valid) { lhs.a = pend; lhs.neg = pend_neg; }
+  if (lhs.neg == b.neg) {
+    bool sign = lhs.neg;
+    int2048 res = add_abs(lhs, b);
+    res.neg = sign;
+    set_pending(res);
+    *this = res;
   } else {
-    int cmp = abs_compare(*this, b);
+    int cmp = abs_compare(lhs, b);
     if (cmp >= 0) {
-      bool sign = neg;
-      *this = sub_abs(*this, b);
-      this->neg = sign;
+      bool sign = lhs.neg;
+      int2048 res = sub_abs(lhs, b);
+      res.neg = sign;
+      set_pending(res);
+      *this = res;
     } else {
-      *this = sub_abs(b, *this);
-      this->neg = b.neg;
+      int2048 res = sub_abs(b, lhs);
+      res.neg = b.neg;
+      set_pending(res);
+      *this = res;
     }
   }
   trim();
