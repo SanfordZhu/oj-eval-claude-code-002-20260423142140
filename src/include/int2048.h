@@ -48,12 +48,12 @@ class int2048 {
   void print();
 
   // Add a big integer
-  int2048 &add(const int2048 &);
+  int2048 &add(int2048);
   // Return the sum of two big integers
   friend int2048 add(int2048, const int2048 &);
 
   // Subtract a big integer
-  int2048 &minus(const int2048 &);
+  int2048 &minus(int2048);
   // Return the difference of two big integers
   friend int2048 minus(int2048, const int2048 &);
 

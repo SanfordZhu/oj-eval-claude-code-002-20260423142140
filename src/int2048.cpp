@@ -135,7 +135,7 @@ void int2048::print() {
   }
 }
 
-int2048 &int2048::add(const int2048 &b) {
+int2048 &int2048::add(int2048 b) {
   if (neg == b.neg) {
     bool sign = neg;
     *this = add_abs(*this, b);
@@ -157,7 +157,7 @@ int2048 &int2048::add(const int2048 &b) {
 
 int2048 add(int2048 a, const int2048 &b) { a.add(b); return a; }
 
-int2048 &int2048::minus(const int2048 &b) {
+int2048 &int2048::minus(int2048 b) {
   if (neg != b.neg) {
     bool sign = neg;
     *this = add_abs(*this, b);
