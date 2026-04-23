@@ -136,11 +136,19 @@ void int2048::print() {
 
 int2048 &int2048::add(const int2048 &b) {
   if (neg == b.neg) {
-    *this = add_abs(*this, b); this->neg = neg;
+    bool sign = neg;
+    *this = add_abs(*this, b);
+    this->neg = sign;
   } else {
     int cmp = abs_compare(*this, b);
-    if (cmp >= 0) { *this = sub_abs(*this, b); this->neg = neg; }
-    else { *this = sub_abs(b, *this); this->neg = b.neg; }
+    if (cmp >= 0) {
+      bool sign = neg;
+      *this = sub_abs(*this, b);
+      this->neg = sign;
+    } else {
+      *this = sub_abs(b, *this);
+      this->neg = b.neg;
+    }
   }
   trim();
   return *this;
@@ -150,11 +158,19 @@ int2048 add(int2048 a, const int2048 &b) { a.add(b); return a; }
 
 int2048 &int2048::minus(const int2048 &b) {
   if (neg != b.neg) {
-    *this = add_abs(*this, b); this->neg = neg;
+    bool sign = neg;
+    *this = add_abs(*this, b);
+    this->neg = sign;
   } else {
     int cmp = abs_compare(*this, b);
-    if (cmp >= 0) { *this = sub_abs(*this, b); this->neg = neg; }
-    else { *this = sub_abs(b, *this); this->neg = !b.neg; }
+    if (cmp >= 0) {
+      bool sign = neg;
+      *this = sub_abs(*this, b);
+      this->neg = sign;
+    } else {
+      *this = sub_abs(b, *this);
+      this->neg = !b.neg;
+    }
   }
   trim();
   return *this;
