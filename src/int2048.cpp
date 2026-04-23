@@ -216,7 +216,7 @@ bool operator==(const int2048 &x, const int2048 &y) { return x.neg == y.neg && x
 bool operator!=(const int2048 &x, const int2048 &y) { return !(x == y); }
 bool operator<(const int2048 &x, const int2048 &y) {
   if (x.neg != y.neg) return x.neg;
-  int cmp = abs_compare(x, y);
+  int cmp = int2048::abs_compare(x, y);
   return x.neg ? (cmp > 0) : (cmp < 0);
 }
 bool operator>(const int2048 &x, const int2048 &y) { return y < x; }
